@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Wallet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .wallet-container {
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .balance {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .token-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .token-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .token-list li:last-child {
+            border-bottom: none;
+        }
+        .token-details {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="wallet-container">
+        <h2>Main Balance</h2>
+        <p class="balance">$10,000</p>
+        <button>Send</button>
+        <button>Receive</button>
+        <h2>Tokens</h2>
+        <ul class="token-list">
+            <li onclick="showTokenDetails('USDT')">USDT</li>
+            <li onclick="showTokenDetails('ETH')">ETH</li>
+            <li onclick="showTokenDetails('BNB')">BNB</li>
+            <li onclick="showTokenDetails('SOL')">SOL</li>
+        </ul>
+        <div id="token-details" class="token-details">
+            <h3 id="token-name"></h3>
+            <p id="token-balance"></p>
+        </div>
+    </div>
+
+    <script>
+        function showTokenDetails(token) {
+            const tokenDetails = document.getElementById('token-details');
+            const tokenName = document.getElementById('token-name');
+            const tokenBalance = document.getElementById('token-balance');
+
+            tokenDetails.style.display = 'block';
+
+            switch (token) {
+                case 'USDT':
+                    tokenName.innerText = 'Tether (USDT)';
+                    tokenBalance.innerText = 'Balance: 1,000 USDT';
+                    break;
+                case 'ETH':
+                    tokenName.innerText = 'Ethereum (ETH)';
+                    tokenBalance.innerText = 'Balance: 10 ETH';
+                    break;
+                case 'BNB':
+                    tokenName.innerText = 'Binance Coin (BNB)';
+                    tokenBalance.innerText = 'Balance: 50 BNB';
+                    break;
+                case 'SOL':
+                    tokenName.innerText = 'Solana (SOL)';
+                    tokenBalance.innerText = 'Balance: 100 SOL';
+                    break;
+                default:
+                    tokenName.innerText = '';
+                    tokenBalance.innerText = '';
+            }
+        }
+    </script>
+</body>
+</html>
