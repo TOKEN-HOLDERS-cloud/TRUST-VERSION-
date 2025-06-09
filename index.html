@@ -6,20 +6,94 @@
     <title>Trust Wallet</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #3772ff, #63caff 100%);
+            margin: 0;
+            min-height: 100vh;
         }
         .wallet-container {
-            max-width: 400px;
-            margin: 40px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 420px;
+            margin: 54px auto 40px auto;
+            padding: 28px 20px 24px 20px;
+            background: #fff;
+            border-radius: 22px;
+            box-shadow: 0 6px 24px rgba(55,114,255,0.18);
+            position: relative;
+        }
+        .logo-circle-holder {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3772ff 60%, #63caff 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 12px rgba(55,114,255,0.13);
+            position: absolute;
+            left: 50%;
+            top: -38px;
+            transform: translateX(-50%);
+            border: 4px solid #fff;
+        }
+        .logo-circle-holder img {
+            width: 38px;
+            height: 38px;
+        }
+        .wallet-title {
+            text-align: center;
+            margin-top: 48px; /* Space for logo */
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: #3772ff;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+        .balance-label {
+            color: #757575;
+            font-size: 1rem;
+            margin-bottom: 2px;
+            text-align: center;
         }
         .balance {
-            font-size: 24px;
+            font-size: 2.1rem;
             font-weight: bold;
-            margin-bottom: 20px;
+            color: #222;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .wallet-actions {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 28px;
+            justify-content: center;
+        }
+        .wallet-actions button {
+            flex: 1 1 0;
+            background: linear-gradient(90deg, #3772ff 50%, #63caff 100%);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 3px 8px rgba(55,114,255,0.10);
+            transition: background 0.2s, transform 0.1s;
+            cursor: pointer;
+            min-width: 100px;
+        }
+        .wallet-actions button:hover {
+            background: linear-gradient(90deg, #295fdf 50%, #43b6e8 100%);
+            transform: translateY(-1px) scale(1.03);
+        }
+        .tokens-section {
+            margin-top: 10px;
+        }
+        .tokens-title {
+            font-size: 1.18rem;
+            font-weight: 600;
+            color: #3772ff;
+            margin-bottom: 10px;
+            margin-left: 4px;
         }
         .token-list {
             list-style: none;
@@ -27,65 +101,179 @@
             margin: 0;
         }
         .token-list li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f2f3f7;
+            cursor: pointer;
+            transition: background 0.13s;
         }
         .token-list li:last-child {
             border-bottom: none;
         }
-        .token-details {
+        .token-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #f4f8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .token-icon img {
+            width: 24px;
+            height: 24px;
+        }
+        .token-name {
+            font-size: 1.08rem;
+            font-weight: 500;
+            color: #212121;
+        }
+        /* Token Details Popup */
+        .token-details-bg {
             display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(55,114,255,0.09);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+        .token-details-popup {
+            background: #fff;
+            border-radius: 18px;
+            padding: 28px 22px;
+            box-shadow: 0 8px 30px rgba(55,114,255,0.17);
+            min-width: 250px;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .token-details-popup h3 {
+            margin: 0 0 6px 0;
+            color: #3772ff;
+            font-size: 1.3rem;
+        }
+        .token-details-popup p {
+            margin: 0 0 18px 0;
+            color: #333;
+        }
+        .close-btn {
+            background: #eee;
+            color: #3772ff;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 7px;
+        }
+        @media (max-width: 480px) {
+            .wallet-container {
+                margin: 12px;
+                padding: 16px 8px;
+            }
+            .wallet-title {
+                font-size: 1.1rem;
+            }
+            .logo-circle-holder {
+                width: 62px;
+                height: 62px;
+                top: -31px;
+            }
+            .logo-circle-holder img {
+                width: 30px;
+                height: 30px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="wallet-container">
-        <h2>Main Balance</h2>
-        <p class="balance">$10,000</p>
-        <button>Send</button>
-        <button>Receive</button>
-        <h2>Tokens</h2>
-        <ul class="token-list">
-            <li onclick="showTokenDetails('USDT')">USDT</li>
-            <li onclick="showTokenDetails('ETH')">ETH</li>
-            <li onclick="showTokenDetails('BNB')">BNB</li>
-            <li onclick="showTokenDetails('SOL')">SOL</li>
-        </ul>
-        <div id="token-details" class="token-details">
+        <div class="logo-circle-holder">
+            <!-- Trust Wallet logo (replace with your asset if needed) -->
+            <img src="https://cryptologos.cc/logos/trust-wallet-token-twt-logo.png?v=029" alt="Trust Wallet Logo" />
+        </div>
+        <div class="wallet-title">Trust Wallet</div>
+        <div class="balance-label">Main Balance</div>
+        <div class="balance">$10,000</div>
+        <div class="wallet-actions">
+            <button>Send</button>
+            <button>Receive</button>
+        </div>
+        <div class="tokens-section">
+            <div class="tokens-title">Tokens</div>
+            <ul class="token-list">
+                <li onclick="showTokenDetails('USDT')">
+                    <div class="token-icon">
+                        <img src="https://cryptologos.cc/logos/tether-usdt-logo.png?v=029" alt="USDT" />
+                    </div>
+                    <span class="token-name">USDT</span>
+                </li>
+                <li onclick="showTokenDetails('ETH')">
+                    <div class="token-icon">
+                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png?v=029" alt="ETH" />
+                    </div>
+                    <span class="token-name">ETH</span>
+                </li>
+                <li onclick="showTokenDetails('BNB')">
+                    <div class="token-icon">
+                        <img src="https://cryptologos.cc/logos/binance-coin-bnb-logo.png?v=029" alt="BNB" />
+                    </div>
+                    <span class="token-name">BNB</span>
+                </li>
+                <li onclick="showTokenDetails('SOL')">
+                    <div class="token-icon">
+                        <img src="https://cryptologos.cc/logos/solana-sol-logo.png?v=029" alt="SOL" />
+                    </div>
+                    <span class="token-name">SOL</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Token Details Popup -->
+    <div class="token-details-bg" id="token-details-bg">
+        <div class="token-details-popup">
             <h3 id="token-name"></h3>
             <p id="token-balance"></p>
+            <button class="close-btn" onclick="closeTokenDetails()">Close</button>
         </div>
     </div>
 
     <script>
         function showTokenDetails(token) {
-            const tokenDetails = document.getElementById('token-details');
+            const tokenDetailsBg = document.getElementById('token-details-bg');
             const tokenName = document.getElementById('token-name');
             const tokenBalance = document.getElementById('token-balance');
 
-            tokenDetails.style.display = 'block';
-
+            let name = '';
+            let balance = '';
             switch (token) {
                 case 'USDT':
-                    tokenName.innerText = 'Tether (USDT)';
-                    tokenBalance.innerText = 'Balance: 1,000 USDT';
+                    name = 'Tether (USDT)';
+                    balance = 'Balance: 1,000 USDT';
                     break;
                 case 'ETH':
-                    tokenName.innerText = 'Ethereum (ETH)';
-                    tokenBalance.innerText = 'Balance: 10 ETH';
+                    name = 'Ethereum (ETH)';
+                    balance = 'Balance: 10 ETH';
                     break;
                 case 'BNB':
-                    tokenName.innerText = 'Binance Coin (BNB)';
-                    tokenBalance.innerText = 'Balance: 50 BNB';
+                    name = 'Binance Coin (BNB)';
+                    balance = 'Balance: 50 BNB';
                     break;
                 case 'SOL':
-                    tokenName.innerText = 'Solana (SOL)';
-                    tokenBalance.innerText = 'Balance: 100 SOL';
+                    name = 'Solana (SOL)';
+                    balance = 'Balance: 100 SOL';
                     break;
-                default:
-                    tokenName.innerText = '';
-                    tokenBalance.innerText = '';
             }
+            tokenName.innerText = name;
+            tokenBalance.innerText = balance;
+            tokenDetailsBg.style.display = 'flex';
+        }
+        function closeTokenDetails() {
+            document.getElementById('token-details-bg').style.display = 'none';
         }
     </script>
 </body>
